@@ -1,0 +1,68 @@
+﻿@page "/categories"
+@inject ApplicationDbContext Context
+@attribute [StreamRendering(true)]
+
+
+<h1>Categories</h1>
+<a href="/categories/create" class="btn btn-primary">New Category</a>
+<br/>
+
+@if (!Categories.Any())
+{
+    <p class="text-center">
+        <em>Loading categories...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th></th>
+        </tr>
+        </thead>
+    
+        <tbody>
+        @foreach (var categories in Categories)
+        {
+            <tr>
+                <td>@categories.Id</td>
+                <td>
+                    <a href="/categories/@categories.Id">
+                        @categories.Title
+                    </a>
+                </td>
+                <td>
+                    <a href="/categories/edit/@categories.Id" class="btn btn-primary">
+                        Edit
+                    </a>
+                    &nbsp;
+                    &nbsp;
+                    <a href="/categories/delete/@categories.Id" class="btn btn-danger">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>   
+}
+
+
+
+
+@code {
+    public IEnumerable<Category> Categories { get; set; } = Enumerable.Empty<Category>();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(1000);
+        
+        Categories = await Context.Categories.AsNoTracking().ToListAsync();
+    }
+
+  
+
+}
